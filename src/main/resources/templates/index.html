@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+</head>
+<body>
+<input id="email" type="text" >
+
+<button id = "btn1" onclick="aa()" >发送验证码</button><br>
+<input id="verification" type="text" >
+<button id = "btn2" onclick="bb()">确认</button>
+<script>
+    var success;
+    var ver2; //存放从后端接送的验证码
+    var time = 0;
+    function aa(){
+        var email = $('#email').val();
+        var data= {
+            "email": email,
+        };
+        document.getElementById("btn1").disabled=true;
+        var timer = setTimeout(function () {
+            document.getElementById("btn1").disabled=false;
+        }, 30000);//30s后才能再次点击
+
+        $.ajax({
+            type: "post",
+            url: "email",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            //返回值类型
+            dataType: "text",
+            success: function (data) {
+                success = 1;
+                ver2 = data;
+            },
+            error: function (err) {
+                //除非邮件发送失败
+                document.getElementById("btn1").disabled=false;
+                success = 0;
+                alert("邮件发送失败");
+            }
+        });
+    }
+
+    function bb() {
+        var ver1 = $('#verification').val(); //获取输入的验证码
+        if (ver1==ver2&&success==1){
+            alert("正确");
+        }else {
+            alert("错误")
+        }
+        //判断计时器是否处于关闭状态
+
+    }
+</script>
+</body>
+</html>
